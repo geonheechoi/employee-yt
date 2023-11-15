@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Pressable } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import React, { useState, useEffect } from "react";
 import moment from "moment";
 import axios from "axios";
@@ -6,7 +6,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 
 const markattendance = () => {
- const router = useRouter();
+  const router = useRouter();
   const [currentDate, setCurrentDate] = useState(moment());
 
   const goToNextDay = () => {
@@ -24,38 +24,44 @@ const markattendance = () => {
   };
 
   const [employees, setEmployees] = useState([]);
-
   useEffect(() => {
     const fetchEmployeeData = async () => {
       try {
         const response = await axios.get("http://localhost:8000/employees");
         setEmployees(response.data);
       } catch (error) {
-        console.log("Error fetching employee data", error);
+        console.log("error fetching employee data", error);
       }
     };
     fetchEmployeeData();
   }, []);
-
-  const [attendances, setAttendance] = useState([]);
-
+  const [attendance, setAttendance] = useState([]);
   const fetchAttendanceData = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/attendance", {
+      const response = await axios.get(`http://localhost:8000/attendance`, {
         params: {
           date: currentDate.format("MMMM D, YYYY"),
         },
       });
       setAttendance(response.data);
     } catch (error) {
-      console.log("Error fetching attendance data", error);
+      console.log("error fetching attendance data", error);
     }
   };
 
   useEffect(() => {
     fetchAttendanceData();
   }, [currentDate]);
+  const employeeWithAttendance = employees.map((employee) => {
+    const attendanceRecord = attendance.find(
+      (record) => record.employeeId === employee.employeeId
+    );
 
+    return {
+      ...employee,
+      status: attendanceRecord ? attendanceRecord.status : "", // 'Not Marked' or a default status
+    };
+  });
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <Pressable>
@@ -83,9 +89,10 @@ const markattendance = () => {
             color="black"
           />
         </View>
+
         <View style={{ marginHorizontal: 12 }}>
-          {employees.map((item, index) => (
-            <Pressable 
+          {employeeWithAttendance.map((item, index) => (
+            <Pressable
               onPress={() =>
                 router.push({
                   pathname: "/[user]",
@@ -98,7 +105,12 @@ const markattendance = () => {
                 })
               }
               key={index}
-              style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 10,
+                marginVertical: 10,
+              }}
             >
               <View
                 style={{
@@ -115,7 +127,7 @@ const markattendance = () => {
                   {item?.employeeName?.charAt(0)}
                 </Text>
               </View>
-              <View>
+              <View style={{flex:1}}>
                 <Text style={{ fontSize: 16, fontWeight: "bold" }}>
                   {item?.employeeName}
                 </Text>
@@ -123,6 +135,25 @@ const markattendance = () => {
                   {item?.designation} ({item?.employeeId})
                 </Text>
               </View>
+              {item?.status && (
+                <View
+                  style={{
+                    width: 50,
+                    height: 50,
+                    borderRadius: 8,
+                    padding: 10,
+                    backgroundColor: "#FF69B4",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Text
+                    style={{ fontSize: 16, color: "white", fontWeight: "bold" }}
+                  >
+                    {item.status.charAt(0)}
+                  </Text>
+                </View>
+              )}
             </Pressable>
           ))}
         </View>
