@@ -1,9 +1,10 @@
 import { StyleSheet, Text, View,Pressable ,TextInput} from 'react-native'
-import React, { useEffect ,useState,useNavigation} from 'react'
+import React, { useEffect ,useState} from 'react'
 import axios from "axios";
 import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import {useRouter} from "expo-router";
+import SearchResults from "../../components/SearchResults";
 const employees = () => {
     const  [employees,setEmployees]=useState([]);
     const [input,setInput]=useState("");
@@ -19,7 +20,7 @@ const employees = () => {
             }
         };
         fetchEmployeeData();
-        },[])
+        },[]);
         console.log(employees);
   return (
     <View style={{flex:1,backgroundColor:"white"}}>
