@@ -79,7 +79,7 @@ import {
         >
           <View
             style={{
-              width: 50,
+              width: 51,
               height: 50,
               borderRadius: 8,
               padding: 10,
