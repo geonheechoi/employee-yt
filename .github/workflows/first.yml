@@ -11,7 +11,7 @@ jobs:
       name: PWD& LS
       runs-on: ubuntu-lastest
       steps:
-        - name: Print working directory
+        - name: Print working directory !
           run: pwd
         - name: list files
           run: ls -al
