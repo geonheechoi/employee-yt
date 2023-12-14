@@ -7,3 +7,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo "Hello, Github Flow"
+  pwd-ls:
+      name: PWD& LS
+      runs-on: ubuntu-lastest
+      steps:
+        - name: Print working directory
+          run: pwd
+        - name: list files
+          run: ls -al
+        
+      
