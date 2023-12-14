@@ -1,7 +1,6 @@
 name: GitHub Actions Demo
 
-on:
-  push:
+on: push
   
 jobs:
   echo:
